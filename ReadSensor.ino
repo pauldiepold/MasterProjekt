@@ -71,11 +71,6 @@ void loop() {
   sensorData[16] = sensor.getCalibratedV();
   sensorData[17] = sensor.getCalibratedW();
 
-  if (normalize) {
-    sum = 0;
-    sum = std::accumulate(sensorData, sensorData+18, sum);
-  }
-
 
   Serial.print(sensor.getTemperature());
   Serial.print(",");
@@ -89,6 +84,11 @@ void loop() {
   Serial.print(timeStamp);
   Serial.print(",");
 
+
+  if (normalize) {
+    sum = 0;
+    sum = std::accumulate(sensorData, sensorData+18, sum);
+  }
 
   for(int i = 0; i < 18; i++) {
     if (normalize) {
