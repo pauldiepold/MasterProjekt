@@ -19,7 +19,7 @@ try:
     ser = serial.Serial(port, baud)
     ser.close()
 except OSError:
-    print("The number of serial maybe not right or the connection is not built correctly.\n")
+    print("The number of serial may be not right or the connection is not built correctly.\n")
 
 ser = serial.Serial(port, baud)
 ser.timeout = 2  # waiting time for reading
@@ -38,8 +38,8 @@ for i in range(n):
 
 ser.close()
 df = pd.DataFrame(data,
-                  columns=['Temp', 'AverageTemp', 'Time', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'R', 'I', 'S', 'J',
-                           'T', 'U', 'V', 'W', 'K', 'L'])
+                  columns=['Temp', 'AverageTemp', 'Time',
+                           'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'R', 'I', 'S', 'J', 'T', 'U', 'V', 'W', 'K', 'L'])
 
 # # Visualisierung mittelwert bilden
 # plt.plot(df.mean()[3:])
