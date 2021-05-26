@@ -1,69 +1,52 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu May 13 19:03:31 2021
+# 1: Start program on create.arduino.cc -> keep it running infinitely
+# 2: Make sure serial port is not used -> Monitor needs to be closed
+# 3: Match port and baud-rate
 
-@author: yilei
-"""
-
-# reset -f
-# clear
-
-# after the second sound of the connection, start this programm!
-# read arduino from serial and make a plot
 import serial
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import openpyxl
 import os
 
-n = 1
-filename = 'test'
+port = 'COM6'  # Port needs to match -> check in create.arduino.cc
+baud = 9600  # baud-rate needs to match -> check in create.arduino.cc
 
-# sets up serial connection (make sure baud rate is correct - matches Arduino)
-# before starting connection  Arduino with IDE, make sure this serical stay closed. Otherwise this connection can not be done.
-# the error from Arduino is: Executing command: exit status 1
+n = 5  # Number of read-cycles
+filename = 'test'  #
 
 try:
-    ser = serial.Serial('COM4', 9600)
+    ser = serial.Serial(port, baud)
     ser.close()
 except OSError:
-    print("The nummber of serical maybe not right or the conncetion is not builded. Serical is ready for reading！\n")
+    print("The number of serial maybe not right or the connection is not built correctly.\n")
 
-ser = serial.Serial('COM4', 9600)
-ser.timeout = 2  # waiting time  for reading
+ser = serial.Serial(port, baud)
+ser.timeout = 2  # waiting time for reading
 
-a = []  # a for saving data
+data = []
 
-i = 1
-while i <= n:
-    data = ser.readline()  # read the serial
-    data = data.decode()  # the read date is in form bytes，so it need to be changed in string
-    data = data.split(",")
-    if len(data) < 1:  # when no more data come, the loop will be stopped.
-        break
-    elif len(data) == 1:
+for i in range(n):
+    line = [float(x) for x in ser.readline().decode().split(",")]  # read next line, split string and parse to float
+    print(line)
+
+    if len(line) <= 1:
         print("No more data from Ardunio...")
         break
-    else:
-        data = list(map(float, data))  # 把字符串转化为数字-->[180.87, 2.16, -3.86]
-    print(data)
-    a.append(data)  # 添加到列表里
 
-    i += 1
-
-df = pd.DataFrame(
-    a,
-    columns=['Temp', 'AverageTemp', 'Time', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'R', 'I', 'S', 'J', 'T', 'U', 'V',
-             'W', 'K', 'L'])
-
-# Visualisierung mittelwert bilden
-
-plt.plot(df.mean()[3:])
-plt.title('Temp: ' + str(round(df.mean()[1], 1)))
+    data.append(line)
 
 ser.close()
+df = pd.DataFrame(data,
+                  columns=['Temp', 'AverageTemp', 'Time', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'R', 'I', 'S', 'J',
+                           'T', 'U', 'V', 'W', 'K', 'L'])
 
-print(a)
+# # Visualisierung mittelwert bilden
+# plt.plot(df.mean()[3:])
+# plt.title('Temp: ' + str(round(df.mean()[1], 1)))
+
+
+# Create dirs if they don't exist
 path = os.getcwd()
 if not os.path.exists(path + '/messdaten'):
     os.mkdir(path + '/messdaten')
@@ -74,5 +57,6 @@ if not os.path.exists(path + '/messdaten/excel'):
 if not os.path.exists(path + '/messdaten/csv'):
     os.mkdir(path + '/messdaten/csv')
 
+# Save to csv and xlsx Files
 df.to_excel(path + "/messdaten/excel/" + filename + ".xlsx")
 df.to_csv(path + "/messdaten/csv/" + filename + ".csv", index=False)
