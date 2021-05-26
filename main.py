@@ -13,7 +13,7 @@ port = 'COM6'  # Port needs to match -> check in create.arduino.cc
 baud = 9600  # baud-rate needs to match -> check in create.arduino.cc
 
 n = 5  # Number of read-cycles
-filename = 'test'  #
+filename = 'test'
 
 try:
     ser = serial.Serial(port, baud)
