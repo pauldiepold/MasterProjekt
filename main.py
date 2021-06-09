@@ -12,8 +12,10 @@ import os
 port = 'COM6'  # Port needs to match -> check in create.arduino.cc
 baud = 9600  # baud-rate needs to match -> check in create.arduino.cc
 
-n = 5  # Number of read-cycles
-filename = 'test'
+n = 2  # Number of read-cycles
+filename = 'append_test'
+normalize = False
+append = True
 
 try:
     ser = serial.Serial(port, baud)
@@ -28,18 +30,23 @@ data = []
 
 for i in range(n):
     line = [float(x) for x in ser.readline().decode().split(",")]  # read next line, split string and parse to float
-    print(line)
 
     if len(line) <= 1:
         print("No more data from Ardunio...")
         break
 
+    if normalize:
+        sensor_sum = sum(line[1:18])
+        line[1:18] = [x / sensor_sum for x in line[1:18]]
+        line[0] = round((line[0] - 10) / 40, 2)
+
+    print(line)
+    print(str(i + 1) + ' von ' + str(n))
     data.append(line)
 
 ser.close()
-df = pd.DataFrame(data,
-                  columns=['Temp', 'AverageTemp', 'Time',
-                           'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'R', 'I', 'S', 'J', 'T', 'U', 'V', 'W', 'K', 'L'])
+df = pd.DataFrame(data, columns=['Temp', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'R', 'I', 'S', 'J', 'T', 'U',
+                                 'V', 'W', 'K', 'L'])
 
 # # Visualisierung mittelwert bilden
 # plt.plot(df.mean()[3:])
@@ -58,5 +65,10 @@ if not os.path.exists(path + '/messdaten/csv'):
     os.mkdir(path + '/messdaten/csv')
 
 # Save to csv and xlsx Files
-df.to_excel(path + "/messdaten/excel/" + filename + ".xlsx")
-df.to_csv(path + "/messdaten/csv/" + filename + ".csv", index=False)
+
+# df.to_excel(path + "/messdaten/excel/" + filename + ".xlsx")
+filename = path + "/messdaten/csv/" + filename + ".csv"
+if append and os.path.isfile(filename):
+    df.to_csv(filename, index=False, mode='a', header=False)
+else:
+    df.to_csv(filename, index=False)
