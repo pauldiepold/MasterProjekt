@@ -19,6 +19,6 @@ for karte in karten:
                       columns=['Temp', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'R', 'S',
                                'T', 'U', 'V', 'W'])
 
-    df.to_csv("messdaten/csv/farbkarten_getrennt/" + karte[0] + karte[1] + '.csv', index=False)
+    df.to_csv("messdaten/csv/farbkarten_getrennt/" + karte[1] + karte[0] + '.csv', index=False)
     index += 1
 
