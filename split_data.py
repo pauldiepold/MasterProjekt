@@ -15,7 +15,9 @@ for karte in karten:
         index = 0
         currentFile = pd.read_csv("messdaten/csv/farbkarten/" + currentFileName + ".csv")
 
-    df = pd.DataFrame(np.asmatrix(currentFile.values)[(0 + 20 * index):(20 + 20 * index), :],
+    data = np.asmatrix(currentFile.values)[(0 + 20 * index):(20 + 20 * index), :]
+
+    df = pd.DataFrame(data,
                       columns=['Temp', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'R', 'S',
                                'T', 'U', 'V', 'W'])
 
