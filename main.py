@@ -13,7 +13,7 @@ port = 'COM6'  # Port needs to match -> check in create.arduino.cc
 baud = 115200  # baud-rate needs to match -> check in create.arduino.cc
 
 n = 10  # int(60 / 0.8 * 2)  # Number of read-cycles
-filename = 'farbkarten_40_grad/03'
+filename = 'farbkarten_40_grad/15'
 normalize = False
 append = True
 
