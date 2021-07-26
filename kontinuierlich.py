@@ -12,10 +12,11 @@ import os
 port = 'COM6'  # Port needs to match -> check in create.arduino.cc
 baud = 115200  # baud-rate needs to match -> check in create.arduino.cc
 
-n = 10  # int(60 / 0.8 * 2)  # Number of read-cycles
-filename = 'farbkarten_40_grad/03'
+n = 5  # Number of read-cycles
+filename = 'kontinuierlich/alle'
 normalize = False
 append = True
+
 
 try:
     ser = serial.Serial(port, baud)
@@ -46,9 +47,7 @@ for i in range(n):
     data.append(line)
 
 ser.close()
-df = pd.DataFrame(data,
-                  columns=['Temp', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'R', 'S',
-                           'T', 'U', 'V', 'W'])
+df = pd.DataFrame(data, columns=['Temp', 'I', 'J', 'K', 'L', 'R', 'S'])
 
 # # Visualisierung mittelwert bilden
 # plt.plot(df.mean()[3:])
