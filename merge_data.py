@@ -1,24 +1,47 @@
-import os
 import pandas as pd
-import numpy as np
 
-with open('pantone.txt') as file:
-    karten = [[x[0:2], x[2:4]] for x in file.read().split('\n')]
+lookup = {
+    'ita': [
+        ['5R04', '4R04', '3R04', '1Y01', '2Y01', '2R03', '5R05', '1R02', '2Y02', '2R04'],
+        ['1R03', '3Y01', '1Y02', '3Y02', '2Y03', '4R05', '4Y01', '5Y01', '5R06', '3Y03'],
+        ['1Y03', '3R05', '4Y02', '2Y04', '3Y04', '4Y03', '1R04', '5Y02', '5Y03', '1Y04'],
+        ['2R05', '1R05', '5Y04', '4Y04', '5R07', '4R06', '3Y05', '3R06', '2Y05', '4Y05'],
+        ['5Y05', '1Y05', '2R06', '1R06', '2Y06', '3Y06', '4R07', '1Y06', '4Y06', '3R07'],
+        ['5Y06', '2R07', '2Y07', '1R07', '1Y07', '4R08', '3Y07', '4Y07', '3R08', '5Y07'],
+        ['2R08', '2Y08', '4Y08', '3Y08', '1R08', '4R09', '5Y08', '1Y08', '3R09', '2R09'],
+        ['1R09', '2Y09', '3Y09', '5Y09', '1Y09', '4Y09', '2Y10', '1R10', '3R10', '2R10'],
+        ['4Y10', '3Y10', '1Y10', '2Y11', '4Y11', '2R11', '1R11', '3Y11', '3R11', '1Y11'],
+        ['2Y12', '2R12', '1Y12', '3Y12', '1R12', '3R12', '2Y13', '1Y13', '1R13', '2R13'],
+        ['3R13', '1Y14', '1R14', '3R14', '2R14', '4R14', '1R15', '4R15', '3R15', '2R15']
+    ],
+    'helligkeit': [
+        ['1Y01', '2Y01', '3Y01', '4Y01', '5Y01'],
+        ['1R02', '1Y02', '2Y02', '3Y02', '4Y02', '5Y02'],
+        ['2R03', '1R03', '1Y03', '2Y03', '3Y03', '4Y03', '5Y03'],
+        ['5R04', '4R04', '3R04', '2R04', '1R04', '1Y04', '2Y04', '3Y04', '4Y04', '5Y04'],
+        ['5R05', '4R05', '3R05', '2R05', '1R05', '1Y05', '2Y05', '3Y05', '4Y05', '5Y05'],
+        ['5R06', '4R06', '3R06', '2R06', '1R06', '1Y06', '2Y06', '3Y06', '4Y06', '5Y06'],
+        ['5R07', '4R07', '3R07', '2R07', '1R07', '1Y07', '2Y07', '3Y07', '4Y07', '5Y07'],
+        ['4R08', '3R08', '2R08', '1R08', '1Y08', '2Y08', '3Y08', '4Y08', '5Y08'],
+        ['4R09', '3R09', '2R09', '1R09', '1Y09', '2Y09', '3Y09', '4Y09', '5Y09'],
+        ['3R10', '2R10', '1R10', '1Y10', '2Y10', '3Y10', '4Y10'],
+        ['3R11', '2R11', '1R11', '1Y11', '2Y11', '3Y11', '4Y11'],
+        ['3R12', '2R12', '1R12', '1Y12', '2Y12', '3Y12'],
+        ['3R13', '2R13', '1R13', '1Y13', '2Y13'],
+        ['4R14', '3R14', '2R14', '1R14', '1Y14'],
+        ['4R15', '3R15', '2R15', '1R15'],
+    ]
+}
 
-currentFile = ''
-currentFileName = ''
-index = 0
+for key, value in lookup.items():
+    for index, step in enumerate(value):
+        df_step = pd.DataFrame(columns=['Temp', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'R', 'S',
+                                        'T', 'U', 'V', 'W'])
+        for karte in step:
+            currentFile = pd.read_csv("messdaten/csv/farbkarten_getrennt/" + karte + ".csv")
+            currentFile40Grad = pd.read_csv("messdaten/csv/farbkarten_getrennt_40_grad/" + karte + ".csv")
 
-for karte in karten:
-    if currentFileName != karte[1]:
-        currentFileName = karte[1]
-        index = 0
-        currentFile = pd.read_csv("messdaten/csv/farbkarten/" + currentFileName + ".csv")
+            df = pd.concat([currentFile, currentFile40Grad])
+            df_step = pd.concat([df_step, df])
 
-    df = pd.DataFrame(np.asmatrix(currentFile.values)[(0 + 20 * index):(20 + 20 * index), :],
-                      columns=['Temp', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'R', 'S',
-                               'T', 'U', 'V', 'W'])
-
-    df.to_csv("messdaten/csv/farbkarten_getrennt/" + karte[1] + karte[0] + '.csv', index=False)
-    index += 1
-
+        df_step.to_csv("messdaten/csv/farbkarten_gruppiert_" + key + "/" + str(index + 1).zfill(2) + '.csv', index=False)

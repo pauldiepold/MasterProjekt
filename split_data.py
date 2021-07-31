@@ -1,8 +1,7 @@
-import os
 import pandas as pd
 import numpy as np
 
-with open('pantone.txt') as file:
+with open('messdaten/csv/pantone.txt') as file:
     karten = [[x[0:2], x[2:4]] for x in file.read().split('\n')]
 
 currentFile = ''
@@ -15,7 +14,7 @@ for karte in karten:
         index = 0
         currentFile = pd.read_csv("messdaten/csv/farbkarten/" + currentFileName + ".csv")
 
-    data = np.asmatrix(currentFile.values)[(0 + 20 * index):(20 + 20 * index), :]
+    data = np.asmatrix(currentFile.values)[(5 + 20 * index):(15 + 20 * index), :]
 
     df = pd.DataFrame(data,
                       columns=['Temp', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'R', 'S',
