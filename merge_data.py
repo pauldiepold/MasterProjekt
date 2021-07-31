@@ -52,10 +52,11 @@ for key, value in lookup.items():
         df_step = pd.DataFrame(columns=['Temp', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'R', 'S',
                                         'T', 'U', 'V', 'W'])
         for karte in step:
-            currentFile = pd.read_csv("messdaten/csv/farbkarten_getrennt/" + karte + ".csv")
+            currentFile30Grad = pd.read_csv("messdaten/csv/farbkarten_getrennt_30_grad/" + karte + ".csv")
+            currentFile35Grad = pd.read_csv("messdaten/csv/farbkarten_getrennt_35_grad/" + karte + ".csv")
             currentFile40Grad = pd.read_csv("messdaten/csv/farbkarten_getrennt_40_grad/" + karte + ".csv")
 
-            df = pd.concat([currentFile, currentFile40Grad])
+            df = pd.concat([currentFile30Grad, currentFile35Grad, currentFile40Grad])
             df_step = pd.concat([df_step, df])
 
         df_step.to_csv("messdaten/csv/farbkarten_gruppiert_" + key + "/" + str(index + 1).zfill(2) + '.csv',
