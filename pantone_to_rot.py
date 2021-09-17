@@ -1,7 +1,3 @@
-import os
-import pandas as pd
-import numpy as np
-
 with open('messdaten/csv/pantone.txt') as file:
     karten = [[x[0:2], x[2:4]] for x in file.read().split('\n')]
 
